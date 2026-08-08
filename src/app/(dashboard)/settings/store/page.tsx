@@ -15,6 +15,7 @@ export default function StoreDetailsPage() {
   const [formData, setFormData] = useState({
     name: '',
     legal_name: '',
+    bin: '',
     phone: '',
     email: '',
     address: '',
@@ -34,6 +35,7 @@ export default function StoreDetailsPage() {
           setFormData({
             name: business.name || '',
             legal_name: business.legal_name || '',
+            bin: business.bin || '',
             phone: business.phone || '',
             email: business.email || '',
             address: business.address || '',
@@ -59,6 +61,7 @@ export default function StoreDetailsPage() {
       .update({
         name: formData.name,
         legal_name: formData.legal_name,
+        bin: formData.bin,
         phone: formData.phone,
         email: formData.email,
         address: formData.address,
@@ -103,14 +106,25 @@ export default function StoreDetailsPage() {
               className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Legal Entity Name</label>
-            <input 
-              type="text" 
-              value={formData.legal_name}
-              onChange={e => setFormData({...formData, legal_name: e.target.value})}
-              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Legal Entity Name</label>
+              <input 
+                type="text" 
+                value={formData.legal_name}
+                onChange={e => setFormData({...formData, legal_name: e.target.value})}
+                className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">BIN / Tax ID</label>
+              <input 
+                type="text" 
+                value={formData.bin}
+                onChange={e => setFormData({...formData, bin: e.target.value})}
+                className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

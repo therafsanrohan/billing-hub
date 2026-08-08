@@ -24,9 +24,9 @@ export default async function CategoriesPage() {
           </Link>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Categories</h1>
         </div>
-        <button className="p-2 bg-primary-600 text-white rounded-xl shadow-sm">
+        <Link href="/inventory/categories/new" className="p-2 bg-primary-600 text-white rounded-xl shadow-sm">
           <Plus size={20} />
-        </button>
+        </Link>
       </header>
 
       <div className="space-y-3">

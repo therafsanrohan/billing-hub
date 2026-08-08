@@ -74,7 +74,7 @@ export default async function InventoryPage() {
           </div>
         ) : (
           products.map(product => (
-            <div key={product.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-4 items-center">
+            <Link href={`/inventory/products/${product.id}`} key={product.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-4 items-center hover:bg-slate-50 transition-colors">
               <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
                 {product.image_url ? (
                   <img src={product.image_url} alt={product.name} className="w-full h-full object-cover rounded-lg" />
@@ -90,7 +90,7 @@ export default async function InventoryPage() {
                 <p className="text-sm font-bold text-slate-900">--</p>
                 <p className="text-[10px] text-slate-500 uppercase tracking-wider">In Stock</p>
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>
