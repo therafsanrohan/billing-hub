@@ -20,12 +20,12 @@ export function getPublicSupabaseConfig(): SupabasePublicConfig {
   const supabaseUrl =
     process.env.NEXT_PUBLIC_SUPABASE_URL ||
     process.env.SUPABASE_URL ||
-    'https://nefnjnngviaywjteduhm.supabase.co';
+    'https://vpqvzauzrxbnnamhhddo.supabase.co';
   const publishableKey =
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     process.env.SUPABASE_PUBLISHABLE_KEY ||
-    'sb_publishable_WwFaeFNaO5DRUGYa3FXWDw_SnsvbW9V';
+    'sb_publishable_xDOIiQ69oNkIo1hYzZosCQ_LiS-ib38';
 
   if (!supabaseUrl || !publishableKey) {
     throw new Error(
