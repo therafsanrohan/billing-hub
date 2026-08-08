@@ -41,10 +41,18 @@ export default function SettingsPage() {
             <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
               {section.items.map((item, i) => {
                 const Icon = item.icon;
+                const href = 
+                  item.name === 'Store Details' ? '/settings/store' :
+                  item.name === 'Staff & Branches' ? '/settings/staff' :
+                  item.name === 'Receipt Settings' ? '/settings/receipt' :
+                  item.name === 'Printers' ? '/settings/printers' :
+                  item.name === 'Notifications' ? '/settings/notifications' : '#';
+
                 return (
-                  <button 
+                  <Link 
+                    href={href}
                     key={item.name} 
-                    className={`w-full flex items-center gap-4 p-4 text-left active:bg-slate-50 transition-colors ${
+                    className={`w-full flex items-center gap-4 p-4 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors ${
                       i !== section.items.length - 1 ? 'border-b border-slate-100' : ''
                     }`}
                   >
@@ -55,7 +63,7 @@ export default function SettingsPage() {
                       <h3 className="font-bold text-slate-900">{item.name}</h3>
                       <p className="text-xs text-slate-500">{item.description}</p>
                     </div>
-                  </button>
+                  </Link>
                 )
               })}
             </div>
