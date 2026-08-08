@@ -1,100 +1,139 @@
 import { createClient } from '@/lib/supabase/server';
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, Printer } from 'lucide-react';
-import PrintButton from './print-button';
+import { ArrowLeft, Printer, Banknote, CreditCard } from 'lucide-react';
+import { notFound } from 'next/navigation';
 
-export default async function ReceiptPage({ params }: { params: { id: string } }) {
+export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
   const supabase = await createClient();
   
-  // Fetch order details
   const { data: order, error } = await supabase
     .from('orders')
-    .select('*, order_items(*, products(name))')
-    .eq('id', params.id)
+    .select(`
+      *,
+      payments (*),
+      order_items (
+        id, quantity, unit_price, total_price, discount_amount,
+        products (name, sku)
+      ),
+      customers (name, phone)
+    `)
+    .eq('id', resolvedParams.id)
     .single();
 
   if (error || !order) {
     notFound();
   }
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'COMPLETED': return 'bg-green-100 text-green-700';
+      case 'PENDING': return 'bg-orange-100 text-orange-700';
+      case 'CANCELLED': return 'bg-red-100 text-red-700';
+      default: return 'bg-slate-100 text-slate-700';
+    }
+  };
+
+  const payment = order.payments?.[0];
+
   return (
-    <div className="bg-slate-50 min-h-screen">
-      <div className="print:hidden p-4 bg-white border-b border-slate-200 flex items-center justify-between sticky top-0 z-10">
+    <div className="p-4 md:p-8 w-full max-w-4xl mx-auto pb-24 md:pb-8">
+      <header className="mb-6 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <Link href="/sales" className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center border border-slate-200">
-            <ChevronLeft size={20} />
+          <Link href="/sales" className="text-slate-500 p-2 -ml-2 rounded-lg hover:bg-slate-100">
+            <ArrowLeft size={20} />
           </Link>
-          <h1 className="font-bold text-slate-900">Receipt #{order.id.slice(0, 8)}</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{order.order_number}</h1>
+            <p className="text-sm text-slate-500">{new Date(order.created_at).toLocaleString()}</p>
+          </div>
         </div>
-        <PrintButton />
-      </div>
+        
+        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getStatusColor(order.status)}`}>
+          {order.status}
+        </span>
+      </header>
 
-      <div className="p-4 max-w-sm mx-auto">
-        {/* Receipt Container - Styling optimized for 58mm/80mm thermal printers */}
-        <div id="receipt-area" className="bg-white p-4 print:p-0 rounded-xl shadow-sm print:shadow-none border border-slate-200 print:border-none">
-          <div className="text-center mb-4">
-            <h2 className="font-bold text-xl uppercase tracking-wider mb-1">Corevow Store</h2>
-            <p className="text-xs text-slate-500 font-mono">Receipt: {order.id.split('-')[0].toUpperCase()}</p>
-            <p className="text-xs text-slate-500 font-mono">{new Date(order.created_at).toLocaleString()}</p>
-          </div>
-
-          <div className="border-t border-dashed border-slate-300 print:border-black my-4"></div>
-
-          <table className="w-full text-sm font-mono mb-4">
-            <thead>
-              <tr className="border-b border-dashed border-slate-300 print:border-black">
-                <th className="text-left py-2">Item</th>
-                <th className="text-right py-2">Qty</th>
-                <th className="text-right py-2">Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {order.order_items.map((item: any) => (
-                <tr key={item.id}>
-                  <td className="py-2 text-slate-700 print:text-black">
-                    {item.products?.name}
-                    {item.discount > 0 && <div className="text-[10px] text-slate-500">-৳{item.discount} disc</div>}
-                  </td>
-                  <td className="text-right py-2 text-slate-700 print:text-black">{item.quantity}</td>
-                  <td className="text-right py-2 text-slate-700 print:text-black">৳{(item.unit_price * item.quantity).toLocaleString()}</td>
-                </tr>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div className="md:col-span-2 space-y-6">
+          {/* Items */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="font-bold text-slate-900">Order Items</h3>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {order.order_items?.map((item: any) => (
+                <div key={item.id} className="p-6 flex justify-between items-center">
+                  <div>
+                    <h4 className="font-semibold text-slate-900">{item.products?.name || 'Unknown Product'}</h4>
+                    <p className="text-sm text-slate-500">
+                      {item.quantity} x ৳{Number(item.unit_price).toFixed(2)}
+                      {Number(item.discount_amount) > 0 && ` (-৳${Number(item.discount_amount).toFixed(2)})`}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-slate-900">৳{Number(item.total_price).toFixed(2)}</p>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
-
-          <div className="border-t border-dashed border-slate-300 print:border-black my-4"></div>
-
-          <div className="space-y-1 text-sm font-mono">
-            <div className="flex justify-between">
-              <span className="text-slate-600 print:text-black">Subtotal:</span>
-              <span className="font-semibold text-slate-900 print:text-black">৳{order.subtotal.toLocaleString()}</span>
             </div>
-            {order.tax_amount > 0 && (
-              <div className="flex justify-between">
-                <span className="text-slate-600 print:text-black">Tax:</span>
-                <span className="font-semibold text-slate-900 print:text-black">৳{order.tax_amount.toLocaleString()}</span>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          {/* Summary */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6 space-y-4">
+            <h3 className="font-bold text-slate-900 mb-4">Summary</h3>
+            
+            <div className="flex justify-between text-sm text-slate-600">
+              <span>Subtotal</span>
+              <span className="font-medium">৳{Number(order.subtotal).toFixed(2)}</span>
+            </div>
+            {Number(order.discount_amount) > 0 && (
+              <div className="flex justify-between text-sm text-emerald-600">
+                <span>Discount</span>
+                <span className="font-medium">-৳{Number(order.discount_amount).toFixed(2)}</span>
               </div>
             )}
-            {order.discount_amount > 0 && (
-              <div className="flex justify-between">
-                <span className="text-slate-600 print:text-black">Discount:</span>
-                <span className="font-semibold text-slate-900 print:text-black">-৳{order.discount_amount.toLocaleString()}</span>
+            {Number(order.tax_amount) > 0 && (
+              <div className="flex justify-between text-sm text-slate-600">
+                <span>Tax & VAT</span>
+                <span className="font-medium">৳{Number(order.tax_amount).toFixed(2)}</span>
               </div>
             )}
             
-            <div className="border-t border-dashed border-slate-300 print:border-black my-2"></div>
-            
-            <div className="flex justify-between text-lg font-bold">
-              <span className="text-slate-900 print:text-black">Total:</span>
-              <span className="text-slate-900 print:text-black">৳{order.total_amount.toLocaleString()}</span>
+            <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
+              <span className="font-bold text-slate-900">Total</span>
+              <span className="text-xl font-black text-slate-900">৳{Number(order.total_amount).toFixed(2)}</span>
             </div>
           </div>
 
-          <div className="text-center mt-8 font-mono text-xs text-slate-500 print:text-black">
-            <p>Thank you for shopping with us!</p>
-            <p>Powered by Billing Hub</p>
+          {/* Payment Info */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <h3 className="font-bold text-slate-900 mb-4">Payment</h3>
+            {payment ? (
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                  {payment.payment_method === 'CASH' ? <Banknote size={20} /> : <CreditCard size={20} />}
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900 uppercase">{payment.payment_method}</p>
+                  <p className="text-xs text-slate-500">{payment.status}</p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-slate-500">No payment details found.</p>
+            )}
           </div>
+
+          {/* Customer Info */}
+          {order.customers && (
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+              <h3 className="font-bold text-slate-900 mb-4">Customer</h3>
+              <p className="font-bold text-slate-900">{order.customers.name}</p>
+              {order.customers.phone && <p className="text-sm text-slate-500">{order.customers.phone}</p>}
+            </div>
+          )}
         </div>
       </div>
     </div>
