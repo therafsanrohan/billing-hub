@@ -99,7 +99,7 @@ export default function POSClient({ initialProducts, customers, businessId }: { 
   return (
     <div className="h-full flex flex-col md:flex-row">
       {/* Product List */}
-      <div className="flex-1 flex flex-col h-1/2 md:h-full border-b md:border-b-0 md:border-r border-slate-200">
+      <div className="flex-1 md:w-[65%] lg:w-[70%] flex flex-col h-1/2 md:h-full border-b md:border-b-0 md:border-r border-slate-200">
         <div className="p-4 bg-white border-b border-slate-200 shrink-0">
           <div className="relative">
             <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
@@ -114,12 +114,12 @@ export default function POSClient({ initialProducts, customers, businessId }: { 
         </div>
         
         <div className="flex-1 overflow-y-auto p-4 hide-scrollbar bg-slate-50">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {filteredProducts.map(product => (
               <button
                 key={product.id}
                 onClick={() => cart.addItem(product)}
-                className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-left active:scale-95 transition-transform"
+                className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-left active:scale-95 transition-transform hover:shadow-md"
               >
                 <div className="w-full aspect-square bg-slate-100 rounded-lg mb-2 flex items-center justify-center overflow-hidden">
                   {product.image_url ? (
@@ -137,7 +137,7 @@ export default function POSClient({ initialProducts, customers, businessId }: { 
       </div>
 
       {/* Cart Area */}
-      <div className="flex-1 flex flex-col h-1/2 md:h-full bg-white relative">
+      <div className="flex-1 md:w-[35%] lg:w-[30%] flex flex-col h-1/2 md:h-full bg-white relative">
         {cart.items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
             <ShoppingBag size={48} className="mb-4 opacity-50" />

@@ -25,7 +25,7 @@ export default async function SalesPage() {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
+    <div className="p-4 md:p-8 w-full max-w-6xl mx-auto">
       <header className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Sales</h1>

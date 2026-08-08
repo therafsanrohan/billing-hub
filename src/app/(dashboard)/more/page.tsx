@@ -26,7 +26,7 @@ export default async function MorePage() {
   ];
 
   return (
-    <div className="p-4 max-w-md mx-auto pb-24">
+    <div className="p-4 md:p-8 w-full max-w-6xl mx-auto pb-24 md:pb-8">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">More</h1>
       </header>

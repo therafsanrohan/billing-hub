@@ -23,8 +23,8 @@ export default async function InventoryPage() {
   const lowStockProducts = 0; 
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <header className="mb-6 flex justify-between items-center">
+    <div className="p-4 md:p-8 w-full max-w-6xl mx-auto h-screen flex flex-col">
+      <header className="mb-4 flex justify-between items-center shrink-0">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Inventory</h1>
           <p className="text-sm text-slate-500 font-medium">Manage products & stock</p>

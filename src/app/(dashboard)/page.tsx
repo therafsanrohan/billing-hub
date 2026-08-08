@@ -40,43 +40,40 @@ export default async function DashboardHomePage() {
   }
 
   return (
-    <div className="p-4 max-w-md mx-auto pb-24">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
-        <p className="text-sm text-slate-500 font-medium">Business Overview</p>
+    <div className="p-4 md:p-8 w-full max-w-6xl mx-auto pb-24 md:pb-8">
+      <header className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+        <p className="text-sm md:text-base text-slate-500 font-medium">Business Overview</p>
       </header>
 
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <div className="bg-primary-600 p-4 rounded-2xl shadow-sm text-white">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-primary-600 p-6 rounded-2xl shadow-sm text-white md:col-span-2 lg:col-span-1">
           <div className="flex items-center gap-2 mb-2 opacity-80">
             <Wallet size={16} />
             <p className="text-xs font-semibold uppercase tracking-wider">Today's Sales</p>
           </div>
-          <p className="text-2xl font-bold">৳{todaySales.toLocaleString()}</p>
+          <p className="text-3xl font-bold">৳{todaySales.toLocaleString()}</p>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm md:col-span-2 lg:col-span-1">
           <div className="flex items-center gap-2 mb-2 text-slate-500">
             <Receipt size={16} />
             <p className="text-xs font-semibold uppercase tracking-wider">Orders</p>
           </div>
-          <p className="text-2xl font-bold text-slate-900">{todayOrders}</p>
+          <p className="text-3xl font-bold text-slate-900">{todayOrders}</p>
         </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center gap-2 mb-1 text-slate-500">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-slate-500">
             <Users size={14} />
-            <p className="text-xs font-medium">Customers</p>
+            <p className="text-xs font-medium uppercase tracking-wider">Customers</p>
           </div>
-          <p className="text-lg font-bold text-slate-900">{totalCustomers}</p>
+          <p className="text-2xl font-bold text-slate-900">{totalCustomers}</p>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center gap-2 mb-1 text-slate-500">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-slate-500">
             <Package size={14} />
-            <p className="text-xs font-medium">Products</p>
+            <p className="text-xs font-medium uppercase tracking-wider">Products</p>
           </div>
-          <p className="text-lg font-bold text-slate-900">{totalProducts}</p>
+          <p className="text-2xl font-bold text-slate-900">{totalProducts}</p>
         </div>
       </div>
 

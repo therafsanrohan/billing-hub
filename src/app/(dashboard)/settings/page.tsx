@@ -26,7 +26,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="p-4 max-w-md mx-auto pb-24 bg-slate-50 min-h-screen">
+    <div className="p-4 md:p-8 w-full max-w-6xl mx-auto pb-24 md:pb-8 bg-slate-50 min-h-screen">
       <header className="mb-6 flex items-center gap-3">
         <Link href="/more" className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-200 text-slate-700">
           <ChevronLeft size={20} />
