@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation';
-import { isRedirectError } from 'next/dist/client/components/redirect';
 import { createClient } from '@/lib/supabase/server';
 import { LoginForm } from './login-form';
 
@@ -17,7 +16,9 @@ export default async function LoginPage() {
 
     return <LoginForm />;
   } catch (err: any) {
-    if (isRedirectError(err)) throw err;
+    if (err && typeof err === 'object' && 'digest' in err && typeof err.digest === 'string' && err.digest.startsWith('NEXT_REDIRECT')) {
+      throw err;
+    }
     return (
       <div style={{ padding: 20, color: 'red' }}>
         <h2>SSR Error on /login</h2>
