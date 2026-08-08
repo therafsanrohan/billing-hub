@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/swc-darwin-arm64": "^16.3.0",
     "@supabase/server": "^1.4.1",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.110.8",
