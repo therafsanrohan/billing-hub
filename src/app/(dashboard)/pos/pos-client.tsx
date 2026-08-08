@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
 import type { Product, Customer } from '@/types/database';
@@ -15,6 +15,42 @@ export default function POSClient({ initialProducts, customers, businessId }: { 
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const cart = useCartStore();
+
+  // Barcode Scanner Listener
+  useEffect(() => {
+    let barcode = '';
+    let lastKeyTime = Date.now();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in the search input
+      if (document.activeElement?.tagName === 'INPUT') return;
+
+      const currentTime = Date.now();
+      
+      if (e.key === 'Enter') {
+        if (barcode.length > 2) {
+          // Find product by SKU
+          const product = initialProducts.find(
+            p => p.sku?.toLowerCase() === barcode.toLowerCase()
+          );
+          if (product) {
+            cart.addItem(product);
+          }
+        }
+        barcode = '';
+      } else if (e.key.length === 1) { // Normal character
+        // Barcode scanners type very fast
+        if (currentTime - lastKeyTime > 50) {
+          barcode = ''; // reset if it's too slow (manual typing)
+        }
+        barcode += e.key;
+      }
+      lastKeyTime = currentTime;
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [initialProducts, cart]);
 
   const handleCheckout = async () => {
     setIsProcessing(true);

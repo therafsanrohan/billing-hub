@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import Link from 'next/link';
 import { ReceiptText, Search, CreditCard, Banknote } from 'lucide-react';
 import type { Order } from '@/types/database';
 
@@ -50,7 +51,7 @@ export default async function SalesPage() {
           </div>
         ) : (
           orders.map(order => (
-            <div key={order.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <Link href={`/sales/${order.id}`} key={order.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between active:bg-slate-50 transition-colors">
               <div>
                 <h4 className="font-semibold text-slate-900">{order.order_number}</h4>
                 <div className="flex items-center gap-2 mt-1">
@@ -69,7 +70,7 @@ export default async function SalesPage() {
                   <span className="text-[10px] font-medium uppercase">{order.payment_status}</span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>
