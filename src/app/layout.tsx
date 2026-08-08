@@ -9,7 +9,14 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'default',
     title: 'Corevow Billing',
+    startupImage: [
+      '/icons/apple-splash-2048-2732.jpg',
+    ],
   },
+  formatDetection: {
+    telephone: false,
+  },
+  applicationName: 'Corevow Billing',
 };
 
 export const viewport: Viewport = {
