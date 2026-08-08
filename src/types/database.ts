@@ -66,3 +66,56 @@ export interface InventoryMovement {
   created_by?: string;
   created_at: string;
 }
+
+export interface Customer {
+  id: string;
+  business_id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  total_spent: number;
+}
+
+export type OrderStatus = 'PENDING' | 'COMPLETED' | 'CANCELLED' | 'REFUNDED';
+export type PaymentStatus = 'UNPAID' | 'PARTIAL' | 'PAID' | 'REFUNDED';
+
+export interface Order {
+  id: string;
+  business_id: string;
+  customer_id?: string;
+  location_id?: string;
+  order_number: string;
+  status: OrderStatus;
+  payment_status: PaymentStatus;
+  subtotal: number;
+  discount_amount: number;
+  tax_amount: number;
+  delivery_charge: number;
+  total_amount: number;
+  notes?: string;
+  created_at: string;
+}
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string;
+  variant_id?: string;
+  quantity: number;
+  unit_price: number;
+  discount_amount: number;
+  subtotal: number;
+}
+
+export type PaymentMethod = 'CASH' | 'BKASH' | 'NAGAD' | 'CARD' | 'BANK_TRANSFER';
+
+export interface Payment {
+  id: string;
+  business_id: string;
+  order_id: string;
+  amount: number;
+  method: PaymentMethod;
+  reference_number?: string;
+  created_at: string;
+}
