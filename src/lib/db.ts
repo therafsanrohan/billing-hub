@@ -1426,8 +1426,9 @@ export const db = {
     if (isSupabaseConfigured && supabase) {
       try {
         const { createClient: createSupabaseClient } = await import('@supabase/supabase-js');
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://nefnjnngviaywjteduhm.supabase.co';
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_WwFaeFNaO5DRUGYa3FXWDw_SnsvbW9V';
+        let supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://vpqvzauzrxbnnamhhddo.supabase.co').trim();
+        if (!supabaseUrl.startsWith('http')) supabaseUrl = `https://${supabaseUrl}`;
+        const supabaseAnonKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_xDOIiQ69oNkIo1hYzZosCQ_LiS-ib38').trim();
         
         const tempSupabase = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
           auth: {
