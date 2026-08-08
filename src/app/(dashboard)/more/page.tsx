@@ -12,15 +12,15 @@ export default async function MorePage() {
       items: [
         { name: 'Customers', icon: Users, href: '/customers', color: 'text-blue-500', bg: 'bg-blue-100' },
         { name: 'Expenses', icon: FileText, href: '/expenses', color: 'text-rose-500', bg: 'bg-rose-100' },
-        { name: 'Tax & VAT', icon: Calculator, href: '/more', color: 'text-amber-500', bg: 'bg-amber-100' },
-        { name: 'Discounts', icon: Gift, href: '/more', color: 'text-emerald-500', bg: 'bg-emerald-100' },
+        { name: 'Tax & VAT', icon: Calculator, href: '/tax', color: 'text-amber-500', bg: 'bg-amber-100' },
+        { name: 'Discounts', icon: Gift, href: '/discounts', color: 'text-emerald-500', bg: 'bg-emerald-100' },
       ]
     },
     {
       group: 'App',
       items: [
         { name: 'Settings', icon: Settings, href: '/settings', color: 'text-slate-500', bg: 'bg-slate-100' },
-        { name: 'Help & Support', icon: HelpCircle, href: '/more', color: 'text-purple-500', bg: 'bg-purple-100' },
+        { name: 'Help & Support', icon: HelpCircle, href: '/support', color: 'text-purple-500', bg: 'bg-purple-100' },
       ]
     }
   ];
