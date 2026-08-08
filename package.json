@@ -14,6 +14,7 @@
     "@supabase/supabase-js": "^2.112.2",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
+    "dotenv": "^17.4.2",
     "html2pdf.js": "^0.14.0",
     "lucide-react": "^0.475.0",
     "next": "16.2.4",
@@ -22,7 +23,9 @@
     "react-dom": "19.2.4",
     "resend": "^4.1.2",
     "server-only": "^0.0.1",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3",
     "zustand": "^5.0.14"
   },
   "devDependencies": {

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save } from 'lucide-react';
+import { validateForm, productSchema } from '@/lib/utils/validation';
+import { toast } from 'sonner';
 import { createClient } from '@/lib/supabase/client';
 
 export default function NewProductPage() {
@@ -19,6 +21,14 @@ export default function NewProductPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
+    const validation = validateForm(productSchema, formData);
+    if (!validation.success) {
+      toast.error(validation.error);
+      return;
+    }
+
     setLoading(true);
     
     try {
@@ -27,25 +37,29 @@ export default function NewProductPage() {
       const { data: memberData } = await supabase.from('business_members').select('business_id').limit(1).single();
       const businessId = memberData?.business_id;
 
-      if (!businessId) throw new Error('No business context found');
+      if (!businessId) {
+        toast.error('No business context found. Please ensure you have a business set up.');
+        return;
+      }
 
       const { error } = await supabase.from('products').insert({
         business_id: businessId,
-        name: formData.name,
-        sku: formData.sku || null,
-        selling_price: parseFloat(formData.selling_price) || 0,
-        cost_price: parseFloat(formData.cost_price) || 0,
-        low_stock_level: parseInt(formData.low_stock_level) || 5,
+        name: validation.data.name,
+        sku: validation.data.sku || null,
+        selling_price: validation.data.selling_price,
+        cost_price: validation.data.cost_price,
+        low_stock_level: validation.data.low_stock_level,
         is_active: true
       });
 
       if (error) throw error;
       
+      toast.success('Product saved successfully');
       router.push('/inventory');
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert('Failed to save product');
+      toast.error(error.message || 'Failed to save product');
     } finally {
       setLoading(false);
     }

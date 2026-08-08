@@ -7,6 +7,8 @@ import type { Product, Customer } from '@/types/database';
 import { useCartStore } from '@/lib/store/useCartStore';
 import { createClient } from '@/lib/supabase/client';
 
+import { toast } from 'sonner';
+
 export default function POSClient({ initialProducts, customers, businessId }: { initialProducts: Product[], customers: Customer[], businessId: string }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
@@ -35,6 +37,9 @@ export default function POSClient({ initialProducts, customers, businessId }: { 
           );
           if (product) {
             cart.addItem(product);
+            toast.success(`Added ${product.name} to cart`);
+          } else {
+            toast.error('Product not found');
           }
         }
         barcode = '';
@@ -80,12 +85,13 @@ export default function POSClient({ initialProducts, customers, businessId }: { 
 
       if (error) throw error;
       
+      toast.success('Order completed successfully');
       cart.clearCart();
       setShowCheckout(false);
       router.push('/sales');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Checkout failed');
+      toast.error(err.message || 'Checkout failed');
     } finally {
       setIsProcessing(false);
     }

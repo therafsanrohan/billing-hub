@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'Corevow Billing',
@@ -34,8 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased min-h-screen bg-slate-50 flex flex-col">
+      <body className="antialiased min-h-screen bg-slate-50 flex flex-col font-sans">
         {children}
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );
