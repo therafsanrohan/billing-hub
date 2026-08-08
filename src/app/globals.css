@@ -1,153 +1,64 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-:root {
-  --bg: #f5f4eb;      /* Lotion */
-  --text: #1E1E1E;    /* Eerie Black */
-  --ruby-red: #100e09; /* Ruby Red Accent */
-  --accent: #100e09;
-  --muted: #EAEAEA;
-  --muted-fg: #666666;
-  --border: #E5E7EB;
-}
-
-.dark {
-  --bg: #f5f4eb;
-  --text: #1E1E1E;
-  --ruby-red: #100e09;
-  --accent: #100e09;
-  --muted: #EAEAEA;
-  --muted-fg: #666666;
-  --border: #E5E7EB;
-}
-
 @theme {
-  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-heading: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --color-primary: var(--bg);
-  --color-white: #f5f4eb;
-  --color-foreground: var(--text);
-  --color-ruby: var(--ruby-red);
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+}
+
+@layer base {
+  :root {
+    --background: #f8fafc;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --accent: #f1f5f9;
+    --accent-foreground: #0f172a;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #2563eb;
+    --radius: 0.5rem;
+  }
 }
 
 @layer base {
   * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    @apply border-[var(--border)];
   }
-  
-  html, body {
-    color-scheme: light !important;
-    overflow-x: hidden;
-    -webkit-tap-highlight-color: transparent;
-    font-family: var(--font-sans);
-    background-color: var(--bg);
-    color: var(--text);
-  }
-  
   body {
-    transition: background-color 0.3s ease, color 0.3s ease;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    letter-spacing: -0.02em;
+    @apply bg-[var(--background)] text-[var(--foreground)] antialiased font-sans;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--muted);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-fg);
-}
-
-/* Print CSS to isolate invoice document and remove shell UI */
-@page {
-  size: A4 portrait;
-  margin: 6mm;
-}
-
-@media print {
-  @page {
-    size: A4 portrait;
-    margin: 0;
+@layer utilities {
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
   }
-
-  html, body {
-    background: #f5f4eb !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    font-size: 11px !important;
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .no-print-bg {
-    background: none !important;
-    padding: 0 !important;
-  }
-
-  #print-area, #print-area * {
-    visibility: visible;
-  }
-
-  #print-area {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: auto !important;
-    margin: 0 !important;
-    padding: 8mm 10mm !important;
-    box-sizing: border-box !important;
-    background: #f5f4eb !important;
-    color: #1E1E1E !important;
-    box-shadow: none !important;
-    border: none !important;
-  }
-
-  tr, .avoid-break, .avoid-page-break {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-
-  thead {
-    display: table-header-group !important;
-  }
-
-  tbody {
-    display: table-row-group !important;
-  }
-
-  .no-print {
-    display: none !important;
-  }
-
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

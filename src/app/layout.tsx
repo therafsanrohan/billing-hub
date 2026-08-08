@@ -1,22 +1,33 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'app Billing',
-  description: 'Isolated invoice and billing application for app legal entities.',
+  title: 'Corevow Billing',
+  description: 'Mobile-First POS, Inventory & Billing Management System',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Corevow Billing',
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#ffffff',
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>৳</text></svg>" />
-      </head>
-      <body className="antialiased min-h-screen">
+    <html lang="en" suppressHydrationWarning>
+      <body className="antialiased min-h-screen bg-slate-50 flex flex-col">
         {children}
       </body>
     </html>

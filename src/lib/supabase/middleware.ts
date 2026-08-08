@@ -1,24 +1,21 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { getPublicSupabaseConfig } from './config';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
 
-  try {
-    const { supabaseUrl, publishableKey } = getPublicSupabaseConfig();
-
-    const supabase = createServerClient(supabaseUrl, publishableKey, {
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
       cookies: {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet: Array<{ name: string; value: string; options?: any }>) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
+        setAll(cookiesToSet: { name: string; value: string; options: any }[]) {
+          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({
             request,
           });
@@ -27,39 +24,26 @@ export async function updateSession(request: NextRequest) {
           );
         },
       },
-    });
-
-    // Refresh user auth session safely
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser();
-
-    // If a network exception or timeout occurs, do NOT crash middleware or start a redirect loop
-    if (error && (error.message?.includes('fetch') || error.status === 0)) {
-      console.warn('[Middleware Network Warning] Supabase auth API unreachable:', error.message);
-      return supabaseResponse;
     }
+  );
 
-    // Protect all /billing routes except login
-    const isBillingRoute = request.nextUrl.pathname.startsWith('/billing');
-    const isLoginPage = request.nextUrl.pathname === '/login';
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    if (isBillingRoute && !user) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/login';
-      return NextResponse.redirect(url);
-    }
+  const isLoginPage = request.nextUrl.pathname.startsWith('/login');
 
-    if (isLoginPage && user) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/billing';
-      return NextResponse.redirect(url);
-    }
-
-    return supabaseResponse;
-  } catch (err: any) {
-    console.error('[Middleware Error]', err.message || err);
-    return supabaseResponse;
+  if (!user && !isLoginPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
   }
+
+  if (user && isLoginPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/';
+    return NextResponse.redirect(url);
+  }
+
+  return supabaseResponse;
 }

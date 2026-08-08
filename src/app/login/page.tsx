@@ -1,31 +1,89 @@
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
-import { LoginForm } from './login-form';
+'use client';
 
-export default async function LoginPage() {
-  try {
-    const supabase = await createClient();
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-    if (user) {
-      redirect('/billing');
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const supabase = createClient();
+    
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      router.push('/');
+      router.refresh();
     }
+  };
 
-    return <LoginForm />;
-  } catch (err: any) {
-    if (err && typeof err === 'object' && 'digest' in err && typeof err.digest === 'string' && err.digest.startsWith('NEXT_REDIRECT')) {
-      throw err;
-    }
-    return (
-      <div style={{ padding: 20, color: 'red' }}>
-        <h2>SSR Error on /login</h2>
-        <pre>{err.message || String(err)}</pre>
-        <pre>{err.stack}</pre>
-        <LoginForm />
+  return (
+    <div className="min-h-screen flex flex-col justify-center items-center bg-slate-50 p-4">
+      <div className="w-full max-w-sm bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">Corevow</h1>
+          <p className="text-sm text-slate-500 font-medium">SECURE AUTHENTICATION PORTAL</p>
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm rounded-lg border border-red-100 text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-colors"
+              placeholder="admin@corevow.com"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-colors"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full h-12 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 disabled:opacity-50 transition-colors"
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
       </div>
-    );
-  }
+    </div>
+  );
 }
