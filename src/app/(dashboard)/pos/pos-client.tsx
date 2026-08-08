@@ -3,15 +3,16 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
-import type { Product } from '@/types/database';
+import type { Product, Customer } from '@/types/database';
 import { useCartStore } from '@/lib/store/useCartStore';
 import { createClient } from '@/lib/supabase/client';
 
-export default function POSClient({ initialProducts, businessId }: { initialProducts: Product[], businessId: string }) {
+export default function POSClient({ initialProducts, customers, businessId }: { initialProducts: Product[], customers: Customer[], businessId: string }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [showCheckout, setShowCheckout] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('CASH');
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const cart = useCartStore();
 
@@ -27,11 +28,10 @@ export default function POSClient({ initialProducts, businessId }: { initialProd
         discount: item.discount
       }));
 
-      // NOTE: Location and Customer are set to null for Sprint 2 simplicity
       const { data, error } = await supabase.rpc('process_pos_order', {
         p_business_id: businessId,
         p_location_id: null,
-        p_customer_id: null,
+        p_customer_id: selectedCustomerId,
         p_subtotal: cart.getSubtotal(),
         p_discount: cart.globalDiscount,
         p_tax: cart.taxAmount,
@@ -178,6 +178,20 @@ export default function POSClient({ initialProducts, businessId }: { initialProd
               </div>
 
               <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Customer (Optional)</label>
+                  <select 
+                    value={selectedCustomerId || ''}
+                    onChange={(e) => setSelectedCustomerId(e.target.value || null)}
+                    className="w-full h-12 px-4 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  >
+                    <option value="">Walk-in Customer</option>
+                    {customers.map(c => (
+                      <option key={c.id} value={c.id}>{c.name} {c.phone ? `(${c.phone})` : ''}</option>
+                    ))}
+                  </select>
+                </div>
+                
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Payment Method</label>
                   <div className="grid grid-cols-2 gap-2">

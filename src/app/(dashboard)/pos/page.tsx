@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import POSClient from './pos-client';
-import type { Product } from '@/types/database';
+import type { Product, Customer } from '@/types/database';
 
 export default async function POSPage() {
   const supabase = await createClient();
@@ -9,10 +9,14 @@ export default async function POSPage() {
   const businessId = memberData?.business_id;
 
   let products: Product[] = [];
+  let customers: Customer[] = [];
   if (businessId) {
     // In a real app we'd paginate or use an autocomplete API. For Sprint 2 we load active products
-    const { data } = await supabase.from('products').select('*').eq('business_id', businessId).eq('is_active', true);
-    products = data || [];
+    const { data: pData } = await supabase.from('products').select('*').eq('business_id', businessId).eq('is_active', true);
+    products = pData || [];
+
+    const { data: cData } = await supabase.from('customers').select('*').eq('business_id', businessId).order('name');
+    customers = cData || [];
   }
 
   return (
@@ -22,7 +26,7 @@ export default async function POSPage() {
       </header>
       
       <div className="flex-1 overflow-hidden relative">
-        <POSClient initialProducts={products} businessId={businessId!} />
+        <POSClient initialProducts={products} customers={customers} businessId={businessId!} />
       </div>
     </div>
   );

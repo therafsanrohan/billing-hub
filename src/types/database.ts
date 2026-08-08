@@ -119,3 +119,23 @@ export interface Payment {
   reference_number?: string;
   created_at: string;
 }
+
+export interface ExpenseCategory {
+  id: string;
+  business_id: string;
+  name: string;
+  description?: string;
+  is_active: boolean;
+}
+
+export interface Expense {
+  id: string;
+  business_id: string;
+  category_id: string;
+  amount: number;
+  date: string;
+  reference_number?: string;
+  note?: string;
+  created_by?: string;
+  created_at: string;
+}
