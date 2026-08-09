@@ -11,8 +11,8 @@ BEGIN
   VALUES (new.id, new.email);
   
   -- 2. Create Default Business
-  INSERT INTO public.businesses (name, settings)
-  VALUES ('My Business', '{"currency": "BDT", "timezone": "Asia/Dhaka"}'::jsonb)
+  INSERT INTO public.businesses (name, currency, timezone)
+  VALUES ('My Business', 'BDT', 'Asia/Dhaka')
   RETURNING id INTO v_business_id;
 
   -- 3. Add User as Owner
